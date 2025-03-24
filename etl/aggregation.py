@@ -1,14 +1,23 @@
 import pymysql
 import pandas as pd
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+Host=os.getenv('host')
+User=os.getenv('user')
+Password=os.getenv('password')
+Database=os.getenv('database')
 
 # --- Database Connection ---
 def connect_db():
     """Establishes a connection to the MySQL database."""
     return pymysql.connect(
-        host="localhost",
-        user="root",
-        password="Santosh",
-        database="Health",
+        host=Host,       
+        user=User,            
+        password=Password,     
+        database=Database,
         cursorclass=pymysql.cursors.DictCursor  # Returns results as dictionaries
     )
 

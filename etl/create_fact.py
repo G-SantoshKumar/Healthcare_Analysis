@@ -1,19 +1,28 @@
 import pandas as pd
 from sqlalchemy import create_engine, text
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+Host=os.getenv('host')
+User=os.getenv('user')
+Password=os.getenv('password')
+Database=os.getenv('database')
 
 # MySQL Database Connection Details
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "Santosh",
-    "database": "Health",
+        "host": Host,       
+        "user":User,            
+        "password":Password,     
+        "database":Database  
 }
 
 # Create SQLAlchemy engine using DB_CONFIG
 engine = create_engine(f"mysql+mysqlconnector://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}/{DB_CONFIG['database']}")
 
 # Load CSV file for the fact table
-hospital_visits_fact = pd.read_csv("cleaned_hospital_visits_fact.csv")
+hospital_visits_fact = pd.read_csv(r"C:\Users\santosh\Desktop\HealthCare\Data\cleaned_hospital_visits_fact.csv")
 
 
 # Function to create the fact table if it doesn't exist
