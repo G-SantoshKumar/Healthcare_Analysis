@@ -22,7 +22,7 @@ billing_dim = pd.read_csv("cleaned_billing_dim.csv")
 # Function to push DataFrame to MySQL
 def push_to_mysql(df, table_name):
     df.to_sql(table_name, engine, if_exists="replace", index=False)
-    print(f"✅ Data pushed to {table_name}")
+    print(f"Data pushed to {table_name}")
 
 # Main function to execute
 if __name__ == "__main__":
@@ -31,4 +31,4 @@ if __name__ == "__main__":
     push_to_mysql(hospital_dim, "hospital_dim")
     push_to_mysql(billing_dim, "billing_dim")
 
-    print("🎉 All dimension tables successfully loaded into MySQL!")
+    print("All dimension tables successfully loaded into MySQL!")

@@ -66,9 +66,9 @@ def push_to_mysql(df, table_name):
 
             # Insert valid data into MySQL table
             valid_data.to_sql(table_name, engine, if_exists="append", index=False)
-            print(f"✅ Data pushed to {table_name}")
+            print(f"Data pushed to {table_name}")
     except Exception as e:
-        print(f"❌ Error inserting data into table: {e}")
+        print(f"Error inserting data into table: {e}")
 
 
 # Main function to execute
@@ -79,4 +79,4 @@ if __name__ == "__main__":
     # Push data into the fact table
     push_to_mysql(hospital_visits_fact, "hospital_visits_fact")
     
-    print("🎉 Fact table successfully loaded into MySQL!")
+    print("Fact table successfully loaded into MySQL!")

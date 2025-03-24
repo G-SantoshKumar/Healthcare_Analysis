@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from streamlit_option_menu import option_menu
-from kpi import *  # Import KPI functions
-from aggregation import *  # Import Aggregation functions
-from datamarts import *  # Import Data Mart functions
+from etl.kpi import *  # Import KPI functions
+from etl.aggregation import *  # Import Aggregation functions
+from etl.datamarts import *  # Import Data Mart functions
 
 # --- Streamlit Page Configuration ---
 st.set_page_config(page_title="Healthcare Analytics Dashboard", layout="wide")
@@ -21,7 +21,7 @@ with st.sidebar:
 
 # --- Overview Section ---
 if selected == "Overview":
-    st.title("📌 Project Overview") 
+    st.title("Project Overview") 
     st.write(
         """
         This project aims to develop a practical healthcare provider analytics repository by utilizing a publicly available dataset from GitHub. The solution will leverage Python for data transformation and the calculation of key healthcare metrics. The system will be implemented using a well-structured schema in MySQL, focusing on specialized data marts for provider productivity and appointment analytics. By integrating and analyzing healthcare data efficiently, this project will enable data-driven decision-making for improved operational performance in the healthcare sector.
@@ -31,19 +31,19 @@ if selected == "Overview":
 
 # --- Schema Section ---
 elif selected == "Schema":
-    st.title("🗂 Database Schema")
+    st.title("Database Schema")
     st.image("schema.png", caption="Database Schema Diagram", use_container_width=True)
 
-# --- KPI Section (Unchanged) ---
+# --- KPI Section 
 elif selected == "KPIs":
-    st.title("📊 Key Performance Indicators")
+    st.title("Key Performance Indicators")
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Total Revenue ($)", f"${get_total_revenue():,.2f}")
     col2.metric("Total Visits", f"{get_total_visits():,}")
     col3.metric("Avg Revenue per Visit ($)", f"${get_avg_revenue_per_visit():,.2f}")
 
-    st.subheader("📌 Revenue Breakdown")
+    st.subheader("Revenue Breakdown")
     revenue_options = ["By Disease", "By Doctor", "By Hospital", "By Patient"]
     selected_revenue = st.selectbox("Select Revenue Type", revenue_options)
 
@@ -58,7 +58,7 @@ elif selected == "KPIs":
     fig = px.bar(df, x=df.columns[0], y=df.columns[1], title=f"Revenue {selected_revenue}")
     st.plotly_chart(fig)
 
-    st.subheader("📌 Visits Analysis")
+    st.subheader("Visits Analysis")
     visits_options = ["By Gender", "By Age Group"]
     selected_visits = st.selectbox("Select Visit Analysis", visits_options)
 
@@ -71,9 +71,9 @@ elif selected == "KPIs":
     fig = px.pie(df, names=df.columns[0], values=df.columns[1], title=f"Visits {selected_visits}")
     st.plotly_chart(fig)
 
-# --- Aggregations Section (Fixed Table Issue) ---
+# --- Aggregations Section 
 elif selected == "Aggregations":
-    st.title("🔢 Aggregations")
+    st.title("Aggregations")
 
     agg_options = [
         "Patient Statistics", "Financial Metrics", 
@@ -96,9 +96,9 @@ elif selected == "Aggregations":
     else:
         st.table(df)
 
-# --- Visualization Section (Fixed Empty Section) ---
+# --- Visualization Section 
 elif selected == "Visualizations":
-    st.title("📊 Data Visualizations")
+    st.title("Data Visualizations")
 
     viz_options = ["Hospital Revenue", "Patients Per Doctor", "Disease Category Distribution"]
     selected_viz = st.selectbox("Select Visualization", viz_options)
@@ -121,9 +121,9 @@ elif selected == "Visualizations":
         
         st.plotly_chart(fig)
 
-# --- Data Marts Section (Fixed Undefined Method Calls) ---
+# --- Data Marts Section 
 elif selected == "Data Marts":
-    st.title("📂 Data Marts")
+    st.title("Data Marts")
 
     dm_options = ["Patient Data Mart", "Financial Data Mart", "Doctor Data Mart", "Disease Data Mart"]
     selected_dm = st.selectbox("Select Data Mart", dm_options)

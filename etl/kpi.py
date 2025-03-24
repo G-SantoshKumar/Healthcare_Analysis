@@ -7,10 +7,10 @@ import mysql.connector
 # Function to connect to the MySQL database
 def get_db_connection():
     connection = mysql.connector.connect(
-        host="localhost",        # Corrected 'DB_HOST'
-        user="root",             # Corrected 'DB_USER'
-        password="Santosh",      # Corrected 'DB_PASSWORD'
-        database="Health"        # Corrected 'DB_NAME'
+        host="localhost",       
+        user="root",            
+        password="Santosh",     
+        database="Health"        
     )
     return connection
 
