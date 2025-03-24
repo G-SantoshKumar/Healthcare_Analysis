@@ -21,11 +21,10 @@ with st.sidebar:
 
 # --- Overview Section ---
 if selected == "Overview":
-    st.title("Project Overview") 
+    st.title("Project Overview")
     st.write(
         """
         This project aims to develop a practical healthcare provider analytics repository by utilizing a publicly available dataset from GitHub. The solution will leverage Python for data transformation and the calculation of key healthcare metrics. The system will be implemented using a well-structured schema in MySQL, focusing on specialized data marts for provider productivity and appointment analytics. By integrating and analyzing healthcare data efficiently, this project will enable data-driven decision-making for improved operational performance in the healthcare sector.
-
         """
     )
 
@@ -34,7 +33,7 @@ elif selected == "Schema":
     st.title("Database Schema")
     st.image("schema.png", caption="Database Schema Diagram", use_container_width=True)
 
-# --- KPI Section 
+# --- KPI Section ---
 elif selected == "KPIs":
     st.title("Key Performance Indicators")
 
@@ -71,12 +70,12 @@ elif selected == "KPIs":
     fig = px.pie(df, names=df.columns[0], values=df.columns[1], title=f"Visits {selected_visits}")
     st.plotly_chart(fig)
 
-# --- Aggregations Section 
+# --- Aggregations Section ---
 elif selected == "Aggregations":
     st.title("Aggregations")
 
     agg_options = [
-        "Patient Statistics", "Financial Metrics", 
+        "Patient Statistics", "Financial Metrics",
         "Hospital Revenue", "Patients Per Doctor", "Disease Category Counts"
     ]
     selected_agg = st.selectbox("Select Aggregation", agg_options)
@@ -96,7 +95,7 @@ elif selected == "Aggregations":
     else:
         st.table(df)
 
-# --- Visualization Section 
+# --- Visualization Section ---
 elif selected == "Visualizations":
     st.title("Data Visualizations")
 
@@ -118,11 +117,11 @@ elif selected == "Visualizations":
             fig = px.pie(df, names=df.columns[0], values=df.columns[1], title=selected_viz)
         else:
             fig = px.bar(df, x=df.columns[0], y=df.columns[1], title=selected_viz)
-        
+
         st.plotly_chart(fig)
 
-# --- Data Marts Section 
-elif selected == "Data Marts":
+# --- Data Marts Section ---
+if selected == "Data Marts":
     st.title("Data Marts")
 
     dm_options = ["Patient Data Mart", "Financial Data Mart", "Doctor Data Mart", "Disease Data Mart"]
@@ -140,4 +139,73 @@ elif selected == "Data Marts":
     if df.empty:
         st.warning("No data available in this Data Mart.")
     else:
-        st.table(df)
+        st.subheader(f"Sample Data from {selected_dm}")
+        st.write(df.head(3))  # Show only first 3 rows
+
+        # --- Patient Data Mart (Fixed Graphs) ---
+        if selected_dm == "Patient Data Mart":
+            st.subheader("Patient Lifestyle Analysis")
+
+        # Ensure the columns exist before plotting
+        if "smoker_status" in df.columns:
+            smoker_counts = df["smoker_status"].fillna("Unknown").value_counts().reset_index()
+            smoker_counts.columns = ["Smoking Status", "Count"]
+            fig = px.pie(smoker_counts, names="Smoking Status", values="Count", title="Smoking Status Distribution")
+            st.plotly_chart(fig)
+
+        if "alcohol_consumption" in df.columns:
+            alcohol_counts = df["alcohol_consumption"].fillna("Unknown").value_counts().reset_index()
+            alcohol_counts.columns = ["Alcohol Consumption", "Count"]
+            fig = px.pie(alcohol_counts, names="Alcohol Consumption", values="Count", title="Alcohol Consumption Levels")
+            st.plotly_chart(fig)
+
+        if "exercise_frequency" in df.columns:
+            exercise_counts = df["exercise_frequency"].fillna("Unknown").value_counts().reset_index()
+            exercise_counts.columns = ["Exercise Frequency", "Count"]
+            fig = px.pie(exercise_counts, names="Exercise Frequency", values="Count", title="Exercise Habits Distribution")
+            st.plotly_chart(fig)
+
+
+        # --- Financial Data Mart (Pie Charts) ---
+        elif selected_dm == "Financial Data Mart":
+            st.subheader("Financial Insights")
+
+            # Total Claims by Claim Status (Changed to Pie Chart)
+            if "claim_status" in df.columns:
+                claim_counts = df["claim_status"].value_counts().reset_index()
+                claim_counts.columns = ["Claim Status", "Count"]
+                fig = px.pie(claim_counts, names="Claim Status", values="Count", title="Total Claims by Claim Status")
+                st.plotly_chart(fig)
+
+            # Average Bill Amount by Payment Method (Changed to Pie Chart)
+            if "payment_method" in df.columns and "total_bill" in df.columns:
+                avg_bill_per_method = df.groupby("payment_method")["total_bill"].mean().reset_index()
+                avg_bill_per_method.columns = ["Payment Method", "Average Bill"]
+                fig = px.pie(avg_bill_per_method, names="Payment Method", values="Average Bill", title="Average Bill Amount by Payment Method")
+                st.plotly_chart(fig)
+
+        # --- Doctor Data Mart ---
+        elif selected_dm == "Doctor Data Mart":
+            st.subheader("Doctor Performance Metrics")
+
+            fig = px.bar(df, x="doctor_name", y="total_patients_seen", color="specialization",
+                         title="Total Patients Seen by Each Doctor")
+            st.plotly_chart(fig)
+
+            fig = px.scatter(df, 
+                 x="years_of_experience", 
+                 y="avg_bill_per_patient", 
+                 title="Doctor Experience vs. Average Bill",
+                 labels={"years_of_experience": "Years of Experience", 
+                         "avg_bill_per_patient": "Avg Bill per Patient"})
+
+            st.plotly_chart(fig)
+        # --- Disease Data Mart ---
+        elif selected_dm == "Disease Data Mart":
+            st.subheader("Disease Analytics")
+
+            fig = px.pie(df, names="category", title="Distribution of Diseases by Category")
+            st.plotly_chart(fig)
+
+            fig = px.bar(df, x="disease_name", y="total_cases", title="Number of Cases per Disease")
+            st.plotly_chart(fig)
